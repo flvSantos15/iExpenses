@@ -1,0 +1,52 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "description": "Desenvolvimento de site",
+      "type": "income",
+      "category": "Venda",
+      "price": 13450,
+      "createdAt": "2022-12-28T22:20:55.322Z"
+    },
+    {
+      "id": 2,
+      "description": "Monitor",
+      "type": "outcome",
+      "category": "Trabalho",
+      "price": 1999,
+      "createdAt": "2023-01-02T22:20:55.322Z"
+    },
+    {
+      "id": 3,
+      "description": "Desenvolvimento de aplicativo mobile",
+      "type": "income",
+      "category": "Trabalho",
+      "price": 5300,
+      "createdAt": "2023-01-03T17:20:55.322Z"
+    },
+    {
+      "id": 4,
+      "description": "Ignite",
+      "type": "outcome",
+      "category": "Estudo",
+      "price": 2200,
+      "createdAt": "2023-01-03T17:20:55.322Z"
+    },
+    {
+      "description": "Internet",
+      "category": "Casa",
+      "price": 120,
+      "type": "outcome",
+      "createdAt": "2023-01-03T23:08:09.381Z",
+      "id": 5
+    },
+    {
+      "description": "Desenvolvimento de um Dashboard",
+      "category": "Trabalho",
+      "price": 8000,
+      "type": "income",
+      "createdAt": "2023-01-03T23:28:38.784Z",
+      "id": 6
+    }
+  ]
+}
