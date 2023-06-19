@@ -1,7 +1,5 @@
-import { ThemeProvider } from 'styled-components'
-import { Text, View, StyleSheet } from 'react-native'
+import { StatusBar, View } from 'react-native'
 
-import { StatusBar } from 'expo-status-bar'
 import {
   useFonts,
   Roboto_400Regular,
@@ -12,10 +10,7 @@ import {
 import { TransactionsProvider } from './src/contexts/TransactionsContext'
 
 import Home from './src/pages/Home'
-// import { Loading } from './src/components/Loading'
-
-import { defaultTheme } from './src/styles/themes/default'
-import { GlobalStyle } from './src/styles/global'
+import { Loading } from './src/components/Loading'
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,32 +18,22 @@ export default function App() {
     Roboto_500Medium,
     Roboto_700Bold
   })
-  console.log('fonts', fontsLoaded)
-  return (
-    <ThemeProvider theme={defaultTheme}>
-      <GlobalStyle />
 
+  if (!fontsLoaded) {
+    return <Loading />
+  }
+
+  return (
+    <View className="w-full h-screen bg-gray-800 text-gray-100 antialiased">
       <TransactionsProvider>
         <Home />
-        {/* {fontsLoaded ? (
-        ) : (
-          <View style={styles.container}>
-            <Text style={{ color: '#fff', fontSize: 24 }}>Carregando...</Text>
-          </View>
-        )} */}
       </TransactionsProvider>
 
-      <StatusBar style="light" backgroundColor="transparent" translucent />
-    </ThemeProvider>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+    </View>
   )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-})

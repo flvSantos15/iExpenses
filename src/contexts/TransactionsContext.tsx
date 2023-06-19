@@ -35,16 +35,23 @@ export const TransactionsContext = createContext({} as TransactionContextData)
 export function TransactionsProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] = useState<ITransactions[]>([])
 
-  const fetchTransactions = useCallback(async (query?: string) => {
-    const { data } = await api.get('/transactions', {
-      params: {
-        _sort: 'createdAt',
-        _order: 'desc',
-        q: query
-      }
-    })
+  console.log('transactions', transactions)
 
-    setTransactions(data)
+  const fetchTransactions = useCallback(async (query?: string) => {
+    try {
+      const { data } = await api.get('/transactions', {
+        params: {
+          _sort: 'createdAt',
+          _order: 'desc',
+          q: query
+        }
+      })
+
+      console.log('contexto', data)
+      setTransactions(data)
+    } catch (err) {
+      console.log('error no contexto', err)
+    }
   }, [])
 
   const createTransaction = useCallback(
