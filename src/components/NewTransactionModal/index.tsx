@@ -14,10 +14,7 @@ import {
 } from 'react-native'
 import { SimpleLineIcons, Feather } from '@expo/vector-icons'
 
-import { ArrowCircleDown, ArrowCircleUp, X } from 'phosphor-react'
-import { useContextSelector } from 'use-context-selector'
-
-import { TransactionsContext } from '../../contexts/TransactionsContext'
+import { useTransaction } from '../../contexts/TransactionsContext'
 import { useEffect, useState } from 'react'
 import clsx from 'clsx'
 
@@ -37,33 +34,23 @@ export function NewTransactionModal({
   isModalOpen,
   setIsModalOpen
 }: NewTransactionProps) {
+  const { createTransaction } = useTransaction()
+
   const [description, setDescription] = useState('')
   const [price, setPrice] = useState('')
   const [category, setCategory] = useState('')
-  const [type, setType] = useState<'income' | 'outcome' | null>(null)
-
-  // const [isModalOpen, setIsModalOpen] = useState(true)
-
-  // const createTransaction = useContextSelector(
-  //   TransactionsContext,
-  //   (context) => {
-  //     return context.createTransaction
-  //   }
-  // )
+  const [type, setType] = useState<'income' | 'outcome'>('income')
 
   async function handleCreateNewtransaction() {
     try {
-      console.log({ description, price, category, type })
-      //     const { description, category, price, type } = data
-
-      //     createTransaction({ description, category, price, type })
+      createTransaction({ description, category, price: Number(price), type })
     } catch (err) {
       console.log(err, 'error no NewTransactionModal')
     } finally {
       setDescription('')
       setPrice('')
       setCategory('')
-      setType(null)
+      setType('income')
 
       setIsModalOpen(false)
     }

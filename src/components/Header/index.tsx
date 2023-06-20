@@ -23,6 +23,7 @@ export function Header() {
           </TouchableOpacity>
         </View>
       </View>
+
       <NewTransactionModal
         isModalOpen={isTransactionModalOpen}
         setIsModalOpen={setIsTransactionModalOpen}

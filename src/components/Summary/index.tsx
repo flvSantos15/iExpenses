@@ -5,10 +5,7 @@ import { priceFormatter } from '../../utils/formatter'
 import { View, Text, SafeAreaView, ScrollView } from 'react-native'
 
 export function Summary() {
-  // const { income, outcome, total } = useSummary()
-  const income = 25000
-  const outcome = 600
-  const total = 24400
+  const { income, outcome, total } = useSummary()
 
   return (
     <SafeAreaView className="flex flex-row items-center py-0 pl-4 pr-0 mx-auto w-full h-[150px] -mt-20">

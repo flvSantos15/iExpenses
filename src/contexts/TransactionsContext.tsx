@@ -1,8 +1,13 @@
-import { ReactNode, useEffect, useState, useMemo, useCallback } from 'react'
+import {
+  ReactNode,
+  useEffect,
+  useState,
+  useMemo,
+  useContext,
+  createContext
+} from 'react'
 
-import { createContext } from 'use-context-selector'
-
-import { api } from '../lib/axios'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export interface ITransactions {
   id: number
@@ -15,14 +20,14 @@ export interface ITransactions {
 
 interface CreateTransactionInput {
   description: string
+  type: 'income' | 'outcome'
   category: string
   price: number
-  type: 'income' | 'outcome'
 }
 
 interface TransactionContextData {
   transactions: ITransactions[]
-  fetchTransactions: (query?: string) => void
+  // fetchTransactions: () => void
   createTransaction: (value: CreateTransactionInput) => void
 }
 
@@ -35,57 +40,54 @@ export const TransactionsContext = createContext({} as TransactionContextData)
 export function TransactionsProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] = useState<ITransactions[]>([])
 
-  console.log('transactions', transactions)
+  // const fetchTransactions = async () => {
+  //   try {
+  //     const transactionsData = await AsyncStorage.getItem('@transactions')
 
-  const fetchTransactions = useCallback(async (query?: string) => {
-    try {
-      const { data } = await api.get('/transactions', {
-        params: {
-          _sort: 'createdAt',
-          _order: 'desc',
-          q: query
-        }
-      })
+  //     if (transactionsData) {
+  //       setTransactions(JSON.parse(transactionsData))
+  //     } else {
+  //       setTransactions([])
+  //     }
+  //   } catch (err) {
+  //     console.log('error no contexto', err)
+  //   }
+  // }
 
-      console.log('contexto', data)
-      setTransactions(data)
-    } catch (err) {
-      console.log('error no contexto', err)
+  const createTransaction = async ({
+    description,
+    category,
+    price,
+    type
+  }: CreateTransactionInput) => {
+    const transactionData = {
+      id: new Date().getTime(),
+      description,
+      category,
+      price,
+      type,
+      createdAt: new Date().toDateString()
     }
-  }, [])
 
-  const createTransaction = useCallback(
-    async ({ description, category, price, type }: CreateTransactionInput) => {
-      const { data } = await api.post('/transactions', {
-        description,
-        category,
-        price,
-        type,
-        createdAt: new Date()
-      })
+    // await AsyncStorage.setItem('@transactions', JSON.stringify(transaction))
 
-      if (transactions?.length) {
-        setTransactions((state) => {
-          return [data, ...state]
-        })
-      } else {
-        setTransactions(data)
-      }
-    },
-    []
-  )
+    if (transactions?.length) {
+      setTransactions((state) => [transactionData, ...state])
+    } else {
+      setTransactions([transactionData])
+    }
+  }
 
-  useEffect(() => {
-    fetchTransactions()
-  }, [fetchTransactions])
+  // useEffect(() => {
+  //   fetchTransactions()
+  // }, [])
 
   const contextValues = useMemo(
     () => ({
       transactions,
-      fetchTransactions,
       createTransaction
     }),
-    [transactions, fetchTransactions, createTransaction]
+    [transactions, createTransaction]
   )
 
   return (
@@ -93,4 +95,10 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       {children}
     </TransactionsContext.Provider>
   )
+}
+
+export const useTransaction = () => {
+  const context = useContext(TransactionsContext)
+
+  return context
 }

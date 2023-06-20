@@ -1,9 +1,8 @@
 import { useEffect } from 'react'
-import { View, TouchableOpacity, Text } from 'react-native'
+import { View, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons'
 
-import { useContextSelector } from 'use-context-selector'
-import { TransactionsContext } from '../../contexts/TransactionsContext'
+import { useTransaction } from '../../contexts/TransactionsContext'
 
 import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
@@ -12,86 +11,62 @@ import { dateFormatter, priceFormatter } from '../../utils/formatter'
 import { api } from '../../lib/axios'
 
 export default function Home() {
-  // const transactions = useContextSelector(TransactionsContext, (context) => {
-  //   return context.transactions
-  // })
-
-  // console.log('home', transactions)
-
-  useEffect(() => {
-    async function load() {
-      try {
-        const { data } = await api.get('/transactions')
-        console.log('data home', data)
-      } catch (err) {
-        console.log('err home', err)
-      }
-    }
-    load()
-  }, [])
+  const { transactions } = useTransaction()
 
   return (
-    <View>
+    <ScrollView>
       <Header />
       <Summary />
 
-      <View className="flex flex-col gap-2 gap-x-0 mt-4 px-4">
-        <View className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md">
-          <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
-            <Text className="font-body text-base text-gray-300">
-              Desenvolvimento de site
-            </Text>
+      <ScrollView className="flex flex-col gap-2 gap-x-0 mt-4 px-4 h-[360px] min-h-[360px]">
+        {transactions.map((transaction) => {
+          return (
+            <View
+              key={transaction.id}
+              className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md"
+            >
+              <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
+                <Text className="font-body text-base text-gray-300">
+                  {transaction.description}
+                </Text>
 
-            <Text className="font-title text-xl text-green-300">
-              {priceFormatter.format(14320)}
-            </Text>
-          </View>
+                <Text
+                  className={`font-title text-xl ${
+                    transaction.type === 'income'
+                      ? 'text-green-300'
+                      : 'text-red-300'
+                  }`}
+                >
+                  {transaction.type === 'income' ? '' : '-'}
+                  {priceFormatter.format(transaction.price)}
+                </Text>
+              </View>
 
-          <View className="w-full flex flex-row justify-between items-center p-0">
-            <View className="flex flex-row items-center">
-              <Ionicons name="pricetags-outline" size={16} color="#7c7c8a" />
-              <Text className="font-body text-base text-gray-500 ml-1">
-                freelancer
-              </Text>
+              <View className="w-full flex flex-row justify-between items-center p-0">
+                <View className="flex flex-row items-center">
+                  <Ionicons
+                    name="pricetags-outline"
+                    size={16}
+                    color="#7c7c8a"
+                  />
+                  <Text className="font-body text-base text-gray-500 ml-1">
+                    {transaction.category}
+                  </Text>
+                </View>
+
+                <View className="flex flex-row items-center">
+                  <Feather name="calendar" size={16} color="#7c7c8a" />
+                  <Text className="font-body text-base text-gray-500 mr-2">
+                    {dateFormatter.format(new Date(transaction.createdAt))}
+                  </Text>
+                </View>
+              </View>
             </View>
+          )
+        })}
+      </ScrollView>
 
-            <View className="flex flex-row items-center">
-              <Feather name="calendar" size={16} color="#7c7c8a" />
-              <Text className="font-body text-base text-gray-500 mr-2">
-                {dateFormatter.format(new Date('16-06-2023'))}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md">
-          <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
-            <Text className="font-body text-base text-gray-300">Aluguel</Text>
-
-            <Text className="text-title text-xl text-red-300">
-              - {priceFormatter.format(600)}
-            </Text>
-          </View>
-
-          <View className="w-full flex flex-row justify-between items-center p-0">
-            <View className="flex flex-row items-center">
-              <Ionicons name="pricetags-outline" size={16} color="#7c7c8a" />
-              <Text className="font-body text-base text-gray-500 ml-1">
-                casa
-              </Text>
-            </View>
-
-            <View className="flex flex-row items-center">
-              <Feather name="calendar" size={16} color="#7c7c8a" />
-              <Text className="font-body text-base text-gray-500 mr-2">
-                {dateFormatter.format(new Date('28-06-2023'))}
-              </Text>
-            </View>
-          </View>
-        </View>
-      </View>
-
-      <View className="flex flex-row justify-center items-center p-0 mt-14">
+      <View className="flex flex-row justify-center items-center w-full p-0 mt-4 mb-4">
         <TouchableOpacity>
           <MaterialIcons name="arrow-back-ios" size={24} color="#323238" />
         </TouchableOpacity>
@@ -118,6 +93,6 @@ export default function Home() {
           <MaterialIcons name="arrow-forward-ios" size={24} color="#00875f" />
         </TouchableOpacity>
       </View>
-    </View>
+    </ScrollView>
   )
 }
