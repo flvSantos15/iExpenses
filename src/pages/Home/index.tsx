@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { View, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons'
 
@@ -8,10 +7,42 @@ import { Header } from '../../components/Header'
 import { Summary } from '../../components/Summary'
 
 import { dateFormatter, priceFormatter } from '../../utils/formatter'
-import { api } from '../../lib/axios'
+import { useState } from 'react'
 
 export default function Home() {
   const { transactions } = useTransaction()
+
+  const [selectedPageIndex, setSelectedPageIndex] = useState(0)
+
+  const numberOfPages = Math.ceil(transactions.length / 10)
+
+  const handlePreviousPageIndex = () => {
+    if (selectedPageIndex > 0) {
+      setSelectedPageIndex(selectedPageIndex - 1)
+    }
+  }
+
+  const handleNextPageIndex = () => {
+    if (selectedPageIndex + 1 < numberOfPages) {
+      setSelectedPageIndex(selectedPageIndex + 1)
+    }
+  }
+
+  const transactionsPages = []
+
+  // parei no calculo de dividir as transactions por array de 10
+  // console.log(18 % 9)
+
+  // transactions.map((item, index) => {
+  //   if (9 % index === 0) {
+  //     // construir um novo array
+  //     console.log('mesmo array', index)
+  //   } else {
+  //     // transactionsPages.push(item)
+  //     // deixar no mesmo array
+  //     console.log('outro array', index)
+  //   }
+  // })
 
   return (
     <ScrollView>
@@ -66,33 +97,46 @@ export default function Home() {
         })}
       </ScrollView>
 
-      <View className="flex flex-row justify-center items-center w-full p-0 mt-4 mb-4">
-        <TouchableOpacity>
-          <MaterialIcons name="arrow-back-ios" size={24} color="#323238" />
-        </TouchableOpacity>
+      {numberOfPages > 1 && (
+        <View className="flex flex-row justify-center items-center w-full p-0 mt-4 mb-4">
+          <TouchableOpacity onPress={handlePreviousPageIndex}>
+            <MaterialIcons
+              name="arrow-back-ios"
+              size={24}
+              color={selectedPageIndex === 0 ? '#323238' : '#00875f'}
+            />
+          </TouchableOpacity>
 
-        <View className="flex flex-row justify-center items-center p-0 gap-2 mr-4 ml-1">
-          <TouchableOpacity className="flex items-center justify-center w-10 h-10 bg-green-700 rounded-md">
-            <Text className="font-title text-base text-center text-gray-100">
-              1
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex items-center justify-center w-10 h-10 bg-gray-600 rounded-md">
-            <Text className="font-title text-base text-center text-gray-100">
-              2
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity className="flex items-center justify-center w-10 h-10 bg-gray-600 rounded-md">
-            <Text className="font-title text-base text-center text-gray-100">
-              3
-            </Text>
+          <View className="flex flex-row justify-center items-center p-0 gap-2 mr-4 ml-1">
+            {Array.from({ length: numberOfPages }).map((_, index) => {
+              return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedPageIndex(index)}
+                  className={`flex items-center justify-center w-10 h-10 ${
+                    selectedPageIndex === index ? 'bg-green-700' : 'bg-gray-600'
+                  } rounded-md`}
+                >
+                  <Text className="font-title text-base text-center text-gray-100">
+                    {index + 1}
+                  </Text>
+                </TouchableOpacity>
+              )
+            })}
+          </View>
+
+          <TouchableOpacity onPress={handleNextPageIndex}>
+            <MaterialIcons
+              name="arrow-forward-ios"
+              size={24}
+              // color="#00875f"
+              color={
+                selectedPageIndex === numberOfPages - 1 ? '#323238' : '#00875f'
+              }
+            />
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity>
-          <MaterialIcons name="arrow-forward-ios" size={24} color="#00875f" />
-        </TouchableOpacity>
-      </View>
+      )}
     </ScrollView>
   )
 }

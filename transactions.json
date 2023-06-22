@@ -1,0 +1,30 @@
+{
+  "months": [
+    {
+      "month": [
+        {
+          "name": "june",
+          "weeks": [
+            {
+              "days": [
+                {
+                  "day": 1,
+                  "transactions": [
+                    {
+                      "id": 1,
+                      "description": "Desenvolvimento de site",
+                      "type": "income",
+                      "category": "Venda",
+                      "price": 13450,
+                      "createdAt": "2022-12-28T22:20:55.322Z"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

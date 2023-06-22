@@ -40,19 +40,19 @@ export const TransactionsContext = createContext({} as TransactionContextData)
 export function TransactionsProvider({ children }: TransactionProviderProps) {
   const [transactions, setTransactions] = useState<ITransactions[]>([])
 
-  // const fetchTransactions = async () => {
-  //   try {
-  //     const transactionsData = await AsyncStorage.getItem('@transactions')
+  const fetchTransactions = async () => {
+    try {
+      const transactionsData = await AsyncStorage.getItem('@transactions')
 
-  //     if (transactionsData) {
-  //       setTransactions(JSON.parse(transactionsData))
-  //     } else {
-  //       setTransactions([])
-  //     }
-  //   } catch (err) {
-  //     console.log('error no contexto', err)
-  //   }
-  // }
+      if (transactionsData) {
+        setTransactions(JSON.parse(transactionsData) as ITransactions[])
+      } else {
+        setTransactions([])
+      }
+    } catch (err) {
+      console.log('error no contexto', err)
+    }
+  }
 
   const createTransaction = async ({
     description,
@@ -69,8 +69,6 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
       createdAt: new Date().toDateString()
     }
 
-    // await AsyncStorage.setItem('@transactions', JSON.stringify(transaction))
-
     if (transactions?.length) {
       setTransactions((state) => [transactionData, ...state])
     } else {
@@ -78,9 +76,15 @@ export function TransactionsProvider({ children }: TransactionProviderProps) {
     }
   }
 
-  // useEffect(() => {
-  //   fetchTransactions()
-  // }, [])
+  useEffect(() => {
+    fetchTransactions()
+  }, [])
+
+  useEffect(() => {
+    if (transactions) {
+      AsyncStorage.setItem('@transactions', JSON.stringify(transactions))
+    }
+  }, [transactions])
 
   const contextValues = useMemo(
     () => ({
