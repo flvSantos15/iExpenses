@@ -14,6 +14,8 @@ export default function Home() {
 
   const [selectedPageIndex, setSelectedPageIndex] = useState(0)
 
+  const test = 'testing'
+
   const numberOfPages = Math.ceil(transactions.length / 10)
 
   const handlePreviousPageIndex = () => {
