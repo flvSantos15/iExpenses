@@ -10,7 +10,7 @@ import { dateFormatter, priceFormatter } from '../../utils/formatter'
 import { useState } from 'react'
 
 export default function Home() {
-  const { transactions } = useTransaction()
+  const { transactions, transactionsDataPages } = useTransaction()
 
   const [selectedPageIndex, setSelectedPageIndex] = useState(0)
 
@@ -28,71 +28,66 @@ export default function Home() {
     }
   }
 
-  const transactionsPages = []
-
-  // parei no calculo de dividir as transactions por array de 10
-  // console.log(18 % 9)
-
-  // transactions.map((item, index) => {
-  //   if (9 % index === 0) {
-  //     // construir um novo array
-  //     console.log('mesmo array', index)
-  //   } else {
-  //     // transactionsPages.push(item)
-  //     // deixar no mesmo array
-  //     console.log('outro array', index)
-  //   }
-  // })
-
   return (
     <ScrollView>
       <Header />
       <Summary />
 
-      <ScrollView className="flex flex-col gap-2 gap-x-0 mt-4 px-4 h-[360px] min-h-[360px]">
-        {transactions.map((transaction) => {
+      <ScrollView className="flex flex-row gap-2 gap-x-0 mt-4 px-4 h-[390px] border border-solid border-[blue]">
+        {transactionsDataPages.map((pages, index) => {
           return (
-            <View
-              key={transaction.id}
-              className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md"
+            <ScrollView
+              key={index}
+              className="flex flex-row gap-2 gap-x-0 mt-4 px-4 w-full border border-solid border-[red]"
             >
-              <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
-                <Text className="font-body text-base text-gray-300">
-                  {transaction.description}
-                </Text>
+              {pages.map((transaction) => {
+                return (
+                  <View
+                    key={transaction.id}
+                    className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md"
+                  >
+                    <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
+                      <Text className="font-body text-base text-gray-300">
+                        {transaction.description}
+                      </Text>
 
-                <Text
-                  className={`font-title text-xl ${
-                    transaction.type === 'income'
-                      ? 'text-green-300'
-                      : 'text-red-300'
-                  }`}
-                >
-                  {transaction.type === 'income' ? '' : '-'}
-                  {priceFormatter.format(transaction.price)}
-                </Text>
-              </View>
+                      <Text
+                        className={`font-title text-xl ${
+                          transaction.type === 'income'
+                            ? 'text-green-300'
+                            : 'text-red-300'
+                        }`}
+                      >
+                        {transaction.type === 'income' ? '' : '-'}
+                        {priceFormatter.format(transaction.price)}
+                      </Text>
+                    </View>
 
-              <View className="w-full flex flex-row justify-between items-center p-0">
-                <View className="flex flex-row items-center">
-                  <Ionicons
-                    name="pricetags-outline"
-                    size={16}
-                    color="#7c7c8a"
-                  />
-                  <Text className="font-body text-base text-gray-500 ml-1">
-                    {transaction.category}
-                  </Text>
-                </View>
+                    <View className="w-full flex flex-row justify-between items-center p-0">
+                      <View className="flex flex-row items-center">
+                        <Ionicons
+                          name="pricetags-outline"
+                          size={16}
+                          color="#7c7c8a"
+                        />
+                        <Text className="font-body text-base text-gray-500 ml-1">
+                          {transaction.category}
+                        </Text>
+                      </View>
 
-                <View className="flex flex-row items-center">
-                  <Feather name="calendar" size={16} color="#7c7c8a" />
-                  <Text className="font-body text-base text-gray-500 mr-2">
-                    {dateFormatter.format(new Date(transaction.createdAt))}
-                  </Text>
-                </View>
-              </View>
-            </View>
+                      <View className="flex flex-row items-center">
+                        <Feather name="calendar" size={16} color="#7c7c8a" />
+                        <Text className="font-body text-base text-gray-500 mr-2">
+                          {dateFormatter.format(
+                            new Date(transaction.createdAt)
+                          )}
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
+                )
+              })}
+            </ScrollView>
           )
         })}
       </ScrollView>
