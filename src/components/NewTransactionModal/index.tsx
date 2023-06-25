@@ -1,21 +1,10 @@
 import { Controller, useForm } from 'react-hook-form'
 
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  TextInput,
-  SafeAreaView,
-  KeyboardAvoidingView,
-  ScrollView,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Modal
-} from 'react-native'
+import { Text, View, TouchableOpacity, TextInput, Modal } from 'react-native'
 import { SimpleLineIcons, Feather } from '@expo/vector-icons'
 
 import { useTransaction } from '../../contexts/TransactionsContext'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import clsx from 'clsx'
 
 interface NewTransactionProps {
@@ -41,7 +30,7 @@ export function NewTransactionModal({
   const [category, setCategory] = useState('')
   const [type, setType] = useState<'income' | 'outcome'>('income')
 
-  async function handleCreateNewtransaction() {
+  const handleCreateNewtransaction = async () => {
     try {
       createTransaction({ description, category, price: Number(price), type })
     } catch (err) {

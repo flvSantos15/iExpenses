@@ -1,4 +1,10 @@
-import { View, TouchableOpacity, Text, ScrollView } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  SafeAreaView
+} from 'react-native'
 import { Ionicons, Feather, MaterialIcons } from '@expo/vector-icons'
 
 import { useTransaction } from '../../contexts/TransactionsContext'
@@ -13,8 +19,6 @@ export default function Home() {
   const { transactions, transactionsDataPages } = useTransaction()
 
   const [selectedPageIndex, setSelectedPageIndex] = useState(0)
-
-  const test = 'testing'
 
   const numberOfPages = Math.ceil(transactions.length / 10)
 
@@ -31,65 +35,54 @@ export default function Home() {
   }
 
   return (
-    <ScrollView>
+    <SafeAreaView>
       <Header />
       <Summary />
 
-      <ScrollView className="flex flex-row gap-2 gap-x-0 mt-4 px-4 h-[390px] border border-solid border-[blue]">
-        {transactionsDataPages.map((pages, index) => {
+      <ScrollView className="flex gap-2 gap-x-0 px-4 w-full h-[370px]">
+        {transactionsDataPages[selectedPageIndex].map((transaction) => {
           return (
-            <ScrollView
-              key={index}
-              className="flex flex-row gap-2 gap-x-0 mt-4 px-4 w-full border border-solid border-[red]"
+            <View
+              key={transaction.id}
+              className="flex items-center pt-3 px-5 pb-6 gap-3 gap-x-0 bg-gray-700 rounded-md"
             >
-              {pages.map((transaction) => {
-                return (
-                  <View
-                    key={transaction.id}
-                    className="flex items-center pt-4 px-5 pb-5 gap-3 gap-x-0 bg-gray-700 rounded-md"
-                  >
-                    <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
-                      <Text className="font-body text-base text-gray-300">
-                        {transaction.description}
-                      </Text>
+              <View className="flex items-start p-0 gap-y-1 gap-x-0 w-full">
+                <Text className="font-body text-base text-gray-300">
+                  {transaction.description}
+                </Text>
 
-                      <Text
-                        className={`font-title text-xl ${
-                          transaction.type === 'income'
-                            ? 'text-green-300'
-                            : 'text-red-300'
-                        }`}
-                      >
-                        {transaction.type === 'income' ? '' : '-'}
-                        {priceFormatter.format(transaction.price)}
-                      </Text>
-                    </View>
+                <Text
+                  className={`font-title text-xl ${
+                    transaction.type === 'income'
+                      ? 'text-green-300'
+                      : 'text-red-300'
+                  }`}
+                >
+                  {transaction.type === 'income' ? '' : '-'}
+                  {priceFormatter.format(transaction.price)}
+                </Text>
+              </View>
 
-                    <View className="w-full flex flex-row justify-between items-center p-0">
-                      <View className="flex flex-row items-center">
-                        <Ionicons
-                          name="pricetags-outline"
-                          size={16}
-                          color="#7c7c8a"
-                        />
-                        <Text className="font-body text-base text-gray-500 ml-1">
-                          {transaction.category}
-                        </Text>
-                      </View>
+              <View className="w-full flex flex-row justify-between items-center p-0">
+                <View className="flex flex-row items-center">
+                  <Ionicons
+                    name="pricetags-outline"
+                    size={16}
+                    color="#7c7c8a"
+                  />
+                  <Text className="font-body text-base text-gray-500 ml-1">
+                    {transaction.category}
+                  </Text>
+                </View>
 
-                      <View className="flex flex-row items-center">
-                        <Feather name="calendar" size={16} color="#7c7c8a" />
-                        <Text className="font-body text-base text-gray-500 mr-2">
-                          {dateFormatter.format(
-                            new Date(transaction.createdAt)
-                          )}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                )
-              })}
-            </ScrollView>
+                <View className="flex flex-row items-center">
+                  <Feather name="calendar" size={16} color="#7c7c8a" />
+                  <Text className="font-body text-base text-gray-500 mr-2">
+                    {dateFormatter.format(new Date(transaction.createdAt))}
+                  </Text>
+                </View>
+              </View>
+            </View>
           )
         })}
       </ScrollView>
@@ -134,6 +127,6 @@ export default function Home() {
           </TouchableOpacity>
         </View>
       )}
-    </ScrollView>
+    </SafeAreaView>
   )
 }

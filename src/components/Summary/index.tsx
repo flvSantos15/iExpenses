@@ -10,7 +10,7 @@ export function Summary() {
   const { income, outcome, total } = useSummary()
 
   return (
-    <SafeAreaView className="flex flex-row items-center py-0 pl-4 pr-0 mx-auto w-full h-[150px] -mt-20">
+    <SafeAreaView className="flex flex-row items-center py-0 pl-4 pr-0 mx-auto w-full h-[150px] -mt-20 mb-5">
       <ScrollView
         horizontal={true}
         showsHorizontalScrollIndicator={false}
