@@ -40,7 +40,7 @@ export default function Home() {
       <Summary />
 
       <ScrollView className="flex gap-2 gap-x-0 px-4 w-full h-[370px]">
-        {transactionsDataPages[selectedPageIndex].map((transaction) => {
+        {transactionsDataPages[selectedPageIndex]?.map((transaction) => {
           return (
             <View
               key={transaction.id}
@@ -98,7 +98,7 @@ export default function Home() {
           </TouchableOpacity>
 
           <View className="flex flex-row justify-center items-center p-0 gap-2 mr-4 ml-1">
-            {Array.from({ length: numberOfPages }).map((_, index) => {
+            {Array.from({ length: numberOfPages })?.map((_, index) => {
               return (
                 <TouchableOpacity
                   key={index}
